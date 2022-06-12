@@ -11,6 +11,7 @@ import (
 
 type DB interface {
 	CreateUser(user models.User) error
+	GetUsers() ([]models.User, error)
 }
 
 type db struct {
@@ -20,6 +21,7 @@ type db struct {
 func NewDB() (DB, error) {
 	DbConn, err := sqlx.Open("sqlite3", "./app.db")
 	if err = DbConn.Ping(); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	log.Println("Database Connected")
@@ -30,10 +32,16 @@ func NewDB() (DB, error) {
 
 func (repo db) CreateUser(user models.User) error {
 	_, err := repo.dbConn.
-		Query("INSERT INTO users(id, name, email) VALUES(?, ?, ?)",
+		Exec("INSERT INTO users(id, name, email) VALUES(?, ?, ?)",
 			user.ID, user.Name, user.Email)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (repo db) GetUsers() ([]models.User, error) {
+	users := []models.User{}
+	err := repo.dbConn.Select(&users, "SELECT * FROM users")
+	return users, err
 }

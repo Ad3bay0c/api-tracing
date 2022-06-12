@@ -20,6 +20,7 @@ func main() {
 	handler := application.NewHandler(service)
 
 	mux.HandleFunc("/api/v1/create-user", handler.CreateUser)
+	mux.HandleFunc("/api/v1/get-user", handler.GetUserInfo)
 
 	log.Println("Server Started")
 	log.Fatal(http.ListenAndServe(":8080", mux))

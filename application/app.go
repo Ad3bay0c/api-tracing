@@ -27,6 +27,16 @@ func (h handler) CreateUser(w http.ResponseWriter, req *http.Request) {
 	err := h.service.CreateUser(user)
 	if err != nil {
 		json.NewEncoder(w).Encode("an error occurred: " + err.Error())
+		return
 	}
 	json.NewEncoder(w).Encode("successful")
+}
+
+func (h handler) GetUserInfo(w http.ResponseWriter, req *http.Request) {
+
+	users, err := h.service.GetUsers()
+	if err != nil {
+		json.NewEncoder(w).Encode("an error occurred: " + err.Error())
+	}
+	json.NewEncoder(w).Encode(users)
 }
