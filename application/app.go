@@ -52,7 +52,7 @@ func (h handler) GetUserInfo(w http.ResponseWriter, req *http.Request) {
 		trace.AddSpanError(span, err)
 		trace.FailSpan(span, fmt.Sprintf("internal server error: %v", err.Error()))
 
-		json.NewEncoder(w).Encode("an error occurred: " + err.Error())
+		json.NewEncoder(w).Encode("an error occurred: " + err.Error() + span.SpanContext().TraceID().String())
 		return
 	}
 	json.NewEncoder(w).Encode(users)
