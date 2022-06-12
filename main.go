@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/Ad3bay0c/backend-tracing-go/Services"
 	"github.com/Ad3bay0c/backend-tracing-go/application"
+	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"github.com/Ad3bay0c/backend-tracing-go/repository"
 )
 

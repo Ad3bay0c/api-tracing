@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"context"
+	"fmt"
+	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"log"
 
 	"github.com/Ad3bay0c/backend-tracing-go/models"
@@ -10,8 +13,8 @@ import (
 )
 
 type DB interface {
-	CreateUser(user models.User) error
-	GetUsers() ([]models.User, error)
+	CreateUser(ctx context.Context, user models.User) error
+	GetUsers(ctx context.Context) ([]models.User, error)
 }
 
 type db struct {
@@ -30,9 +33,12 @@ func NewDB() (DB, error) {
 	}, nil
 }
 
-func (repo db) CreateUser(user models.User) error {
+func (repo db) CreateUser(ctx context.Context, user models.User) error {
+	ctx, span := trace.NewSpan(ctx, "CreateUser DB Method", nil)
+	defer span.End()
+
 	_, err := repo.dbConn.
-		Exec("INSERT INTO users(id, name, email) VALUES(?, ?, ?)",
+		ExecContext(ctx, "INSERT INTO users(id, name, email) VALUES(?, ?, ?)",
 			user.ID, user.Name, user.Email)
 	if err != nil {
 		return err
@@ -40,8 +46,17 @@ func (repo db) CreateUser(user models.User) error {
 	return nil
 }
 
-func (repo db) GetUsers() ([]models.User, error) {
+func (repo db) GetUsers(ctx context.Context) ([]models.User, error) {
+	ctx, span := trace.NewSpan(ctx, "GetUser DB Method", nil)
+	defer span.End()
+
 	users := []models.User{}
-	err := repo.dbConn.Select(&users, "SELECT * FROM users")
+	err := repo.dbConn.SelectContext(ctx, &users, "SELECT * FROM user")
+	if err != nil {
+		trace.AddSpanError(span, fmt.Errorf("internal server error: %v - line 56", err))
+		trace.FailSpan(span, fmt.Sprintf("internal server error: %v - line 56", err))
+
+		return nil, err
+	}
 	return users, err
 }

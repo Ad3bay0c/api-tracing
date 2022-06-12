@@ -10,7 +10,6 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -34,7 +33,7 @@ func NewProvider(config ProviderConfig) (Provider, error) {
 	if config.Disabled {
 		return Provider{provider: trace.NewNoopTracerProvider()}, nil
 	}
-	// implement exporter to display the trace data
+	//implement exporter to display the trace data
 	//exp, err := jaeger.NewRawExporter(
 	//	jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(config.JaegerEndpoint)),
 	//)
@@ -46,9 +45,9 @@ func NewProvider(config ProviderConfig) (Provider, error) {
 		sdktrace.WithBatcher(exp),
 		sdktrace.WithResource(sdkresource.NewWithAttributes(
 			"",
-			semconv.ServiceNameKey.String(config.ServiceName),
-			semconv.ServiceVersionKey.String(config.ServiceVersion),
-			semconv.DeploymentEnvironmentKey.String(config.Environment),
+			//semconv.ServiceNameKey.String(config.ServiceName),
+			//semconv.ServiceVersionKey.String(config.ServiceVersion),
+			//semconv.DeploymentEnvironmentKey.String(config.Environment),
 		)),
 	)
 	otel.SetTracerProvider(prv)

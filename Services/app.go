@@ -1,13 +1,15 @@
 package Services
 
 import (
+	"context"
+	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"github.com/Ad3bay0c/backend-tracing-go/models"
 	"github.com/Ad3bay0c/backend-tracing-go/repository"
 )
 
 type App interface {
-	CreateUser(user models.User) error
-	GetUsers() ([]models.User, error)
+	CreateUser(ctx context.Context, user models.User) error
+	GetUsers(ctx context.Context) ([]models.User, error)
 }
 
 type appService struct {
@@ -20,10 +22,16 @@ func NewAppService(repo repository.DB) App {
 	}
 }
 
-func (a appService) CreateUser(user models.User) error {
-	return a.repo.CreateUser(user)
+func (a appService) CreateUser(ctx context.Context, user models.User) error {
+	ctx, span := trace.NewSpan(ctx, "CreateUser Service Method", nil)
+	defer span.End()
+
+	return a.repo.CreateUser(ctx, user)
 }
 
-func (a appService) GetUsers() ([]models.User, error) {
-	return a.repo.GetUsers()
+func (a appService) GetUsers(ctx context.Context) ([]models.User, error) {
+	ctx, span := trace.NewSpan(ctx, "GetUser Service Method", nil)
+	defer span.End()
+
+	return a.repo.GetUsers(ctx)
 }
