@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"log"
 
+	"github.com/Ad3bay0c/backend-tracing-go/application/trace"
 	"github.com/Ad3bay0c/backend-tracing-go/models"
 
 	"github.com/jmoiron/sqlx"
